@@ -1,6 +1,32 @@
 import { create } from 'zustand'
-import type { DesignParams, PatternType } from '../types'
+import type { DesignParams, PatternType, ParamGroup, PatternParams, ColorParams, ExportParams } from '../types'
 import { THEMES } from '../themes/palettes'
+
+const DEFAULT_PATTERN_PARAMS: PatternParams = {
+  pattern: 'spiral',
+  seed: 42,
+  iterations: 200,
+  scale: 1.0,
+  rotation: 0,
+  strokeWidth: 1.5,
+  opacity: 0.8,
+}
+
+const DEFAULT_COLOR_PARAMS: ColorParams = {
+  bgColor: '#030712',
+  palette: THEMES[0].colors,
+}
+
+const DEFAULT_EXPORT_PARAMS: ExportParams = {
+  width: 800,
+  height: 1000,
+}
+
+const DEFAULT_PARAMS: DesignParams = {
+  ...DEFAULT_PATTERN_PARAMS,
+  ...DEFAULT_COLOR_PARAMS,
+  ...DEFAULT_EXPORT_PARAMS,
+}
 
 interface DesignStore extends DesignParams {
   svgContent: string
@@ -11,20 +37,11 @@ interface DesignStore extends DesignParams {
   setSvgContent: (s: string) => void
   exportSvg: () => void
   exportPng: () => void
+  resetGroup: (group: ParamGroup) => void
 }
 
 export const useDesignStore = create<DesignStore>((set, get) => ({
-  pattern: 'spiral',
-  seed: 42,
-  iterations: 200,
-  scale: 1.0,
-  rotation: 0,
-  strokeWidth: 1.5,
-  opacity: 0.8,
-  bgColor: '#030712',
-  palette: THEMES[0].colors,
-  width: 800,
-  height: 1000,
+  ...DEFAULT_PARAMS,
   svgContent: '',
   setParam: (key, value) => set({ [key]: value } as any),
   setPattern: (p) => set({ pattern: p }),
@@ -60,5 +77,18 @@ export const useDesignStore = create<DesignStore>((set, get) => ({
       })
     }
     img.src = url
+  },
+  resetGroup: (group) => {
+    switch (group) {
+      case 'pattern':
+        set({ ...DEFAULT_PATTERN_PARAMS })
+        break
+      case 'color':
+        set({ ...DEFAULT_COLOR_PARAMS })
+        break
+      case 'export':
+        set({ ...DEFAULT_EXPORT_PARAMS })
+        break
+    }
   },
 }))

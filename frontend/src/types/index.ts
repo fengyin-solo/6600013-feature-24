@@ -1,5 +1,7 @@
 export type PatternType = 'spiral' | 'fractal' | 'wave' | 'circles' | 'voronoi' | 'noise'
 
+export type ParamGroup = 'pattern' | 'color' | 'export'
+
 export interface DesignParams {
   pattern: PatternType
   seed: number
@@ -19,3 +21,7 @@ export interface ColorTheme {
   name: string
   colors: string[]
 }
+
+export type PatternParams = Pick<DesignParams, 'pattern' | 'seed' | 'iterations' | 'scale' | 'rotation' | 'strokeWidth' | 'opacity'>
+export type ColorParams = Pick<DesignParams, 'bgColor' | 'palette'>
+export type ExportParams = Pick<DesignParams, 'width' | 'height'>
